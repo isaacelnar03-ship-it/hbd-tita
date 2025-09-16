@@ -12,11 +12,11 @@
       background: linear-gradient(135deg, #ffe6eb, #fffaf0);
       font-family: 'Dancing Script', cursive;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       text-align: center;
-      flex-direction: column;
     }
 
     h1 {
@@ -37,21 +37,21 @@
     .slideshow {
       position: relative;
       width: 90%;
-      max-width: 400px;    /* portrait width */
-      height: 550px;       /* portrait height */
+      max-width: 400px;
+      height: 520px;          /* portrait ratio */
       margin-top: 30px;
       overflow: hidden;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      background: #fff;
     }
 
     .slide {
       position: absolute;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;      /* fill frame, crop edges */
+      object-fit: cover;
       opacity: 0;
       transition: opacity 1s ease-in-out;
     }
@@ -60,10 +60,34 @@
       opacity: 1;
     }
 
+    /* Floating button */
+    #play-note {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #d6336c;
+      color: #fff;
+      border: none;
+      padding: 12px 18px;
+      font-size: 1rem;
+      border-radius: 50px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      cursor: pointer;
+      z-index: 1000;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
     @media (max-width: 600px) {
       h1 { font-size: 2rem; }
       .message { font-size: 1.3rem; }
-      .slideshow { height: 420px; }
+      .slideshow { height: 400px; }
+      #play-note { font-size: 0.9rem; padding: 10px 16px; }
     }
   </style>
 </head>
@@ -78,6 +102,15 @@
     <img src="3.jpg" class="slide" alt="Birthday Pic 3">
   </div>
 
+  <!-- Floating music button -->
+  <button id="play-note">🎶 Click me</button>
+
+  <!-- Background music -->
+  <audio id="bg-music" autoplay loop muted>
+    <source src="Download.mp4" type="audio/mpeg">
+    Your browser does not support audio.
+  </audio>
+
   <script>
     // Typing effect
     const message = `Dear Tita,  
@@ -89,7 +122,6 @@ We’re so lucky to have you in our lives. 💖
 Enjoy your special day! 🥳`;
     const typedEl = document.getElementById('typed');
     let i = 0;
-
     function typeWriter() {
       if (i < message.length) {
         typedEl.innerHTML += message.charAt(i) === '\n' ? '<br>' : message.charAt(i);
@@ -107,6 +139,15 @@ Enjoy your special day! 🥳`;
       current = (current + 1) % slides.length;
       slides[current].classList.add('active');
     }, 3000);
+
+    // Music unmute on click
+    const music = document.getElementById('bg-music');
+    const playBtn = document.getElementById('play-note');
+    playBtn.addEventListener('click', () => {
+      music.muted = false;
+      music.play();
+      playBtn.style.display = 'none';
+    });
   </script>
 
 </body>
